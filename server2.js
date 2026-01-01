@@ -65,73 +65,57 @@ app.listen(PORT, () => console.log(`🚀 EagleAI running on port ${PORT}`));
 =======
 import express from "express";
 import cors from "cors";
-import "dotenv/config";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type"]
+}));
+app.options("*", cors());
 app.use(express.json());
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-
-if (!OPENAI_API_KEY) {
-  console.error("❌ OPENAI_API_KEY missing");
-}
-
-// ================= ROOT CHECK =================
+// Root
 app.get("/", (req, res) => {
   res.send("✅ EagleAI server is running");
 });
 
-// ================= CHAT =================
+// Chat
 app.post("/api/chat", async (req, res) => {
   try {
-    const response = await fetch(
-      "https://api.openai.com/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(req.body)
-      }
-    );
+    const { message } = req.body;
+    if (!message) return res.status(400).json({ reply: "Message missing" });
 
-    const data = await response.json();
-    res.json(data);
+    // Test reply (no OpenAI yet)
+    res.json({ reply: `🤖 EagleAI reply: ${message}` });
+
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Chat API failed" });
+    res.status(500).json({ reply: "Server error" });
   }
 });
 
-// ================= IMAGE =================
+// Image
 app.post("/api/image", async (req, res) => {
   try {
-    const response = await fetch(
-      "https://api.openai.com/v1/images/generations",
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${OPENAI_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(req.body)
-      }
-    );
+    const { prompt } = req.body;
+    if (!prompt) return res.status(400).json({ error: "Prompt missing" });
 
-    const data = await response.json();
-    res.json(data);
+    res.json({
+      url: "https://via.placeholder.com/512x512.png?text=EagleAI+Image"
+    });
+
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Image API failed" });
+    res.status(500).json({ error: "Image generation failed" });
   }
 });
 
-// ================= START SERVER =================
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log("✅ Server running on port", PORT);
+  console.log(`✅ EagleAI server running on port ${PORT}`);
 });
 >>>>>>> d592946 (Initial commit)

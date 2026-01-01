@@ -28,9 +28,9 @@
     "start": "node server2.js"
   },
   "dependencies": {
-    "express": "^4.21.2",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "express": "^4.21.2"
   }
 }
 >>>>>>> d592946 (Initial commit)

@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 node_modules
 .env
+=======
+node_modules
+.env
+>>>>>>> 90257d9 (Add gitignore)
