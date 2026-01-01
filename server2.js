@@ -64,11 +64,11 @@ app.post("/api/chat", async (req, res) => {
 app.listen(PORT, () => console.log(`🚀 EagleAI running on port ${PORT}`));
 =======
 import express from "express";
-import fetch from "node-fetch";
 import cors from "cors";
 import "dotenv/config";
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
@@ -77,6 +77,11 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 if (!OPENAI_API_KEY) {
   console.error("❌ OPENAI_API_KEY missing");
 }
+
+// ================= ROOT CHECK =================
+app.get("/", (req, res) => {
+  res.send("✅ EagleAI server is running");
+});
 
 // ================= CHAT =================
 app.post("/api/chat", async (req, res) => {
@@ -96,7 +101,8 @@ app.post("/api/chat", async (req, res) => {
     const data = await response.json();
     res.json(data);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Chat API failed" });
   }
 });
 
@@ -118,11 +124,14 @@ app.post("/api/image", async (req, res) => {
     const data = await response.json();
     res.json(data);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Image API failed" });
   }
 });
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log("✅ Server running");
+// ================= START SERVER =================
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log("✅ Server running on port", PORT);
 });
 >>>>>>> d592946 (Initial commit)
