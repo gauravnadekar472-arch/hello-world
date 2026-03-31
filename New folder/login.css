@@ -1,86 +1,225 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Poppins", sans-serif;
 }
 
-body {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(-45deg, #0f2027, #1c3a4a, #2c5364, #1b1f3b);
-  background-size: 400% 400%;
-  animation: bgMove 12s ease infinite;
+body{
+  background:#0f172a;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
 }
 
-@keyframes bgMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* MAIN BOX */
+.container{
+  width:100%;
+  max-width:400px;
+  background:#111827;
+  padding:30px 25px;
+  border-radius:20px;
+  box-shadow:0 10px 40px rgba(0,0,0,0.6);
+  animation:fadeIn 0.6s ease;
 }
 
-.login-container {
-  width: 90%;
-  max-width: 360px;
-  background: rgba(0,0,0,0.5);
-  padding: 26px;
-  border-radius: 18px;
-  text-align: center;
-  box-shadow: 0 0 30px rgba(0,255,255,0.25);
+/* LOGO */
+.logo{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  color:white;
+  font-weight:600;
+  font-size:20px;
+  margin-bottom:20px;
 }
 
-.app-title {
-  font-size: 26px;
-  margin-bottom: 22px;
-  color: #00fff0;
-  text-shadow: 0 0 15px #00fff0;
+/* TITLE */
+h1{
+  text-align:center;
+  color:white;
+  margin-bottom:20px;
 }
 
-form input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  outline: none;
-  font-size: 15px;
-  margin-bottom: 15px;
+/* INPUT */
+form input{
+  width:100%;
+  padding:14px;
+  margin-bottom:15px;
+  border-radius:10px;
+  border:1px solid #374151;
+  background:#1f2937;
+  color:white;
+  transition:0.3s;
 }
 
-form button {
-  width: 100%;
-  padding: 12px;
-  border-radius: 14px;
-  border: none;
-  background: #00fff0;
-  color: #000;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 0 15px #00fff0;
+form input:focus{
+  border-color:#3b82f6;
+  box-shadow:0 0 0 2px rgba(59,130,246,0.2);
+  outline:none;
 }
 
-.divider {
-  margin: 15px 0;
-  color: #bbb;
+/* PASSWORD */
+.password-box{
+  position:relative;
 }
 
-.google-btn {
-  width: 100%;
-  padding: 12px;
-  border-radius: 14px;
-  border: 1px solid #fff;
-  background: transparent;
-  color: #fff;
-  cursor: pointer;
+.eye{
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  cursor:pointer;
+  color:#9ca3af;
 }
 
-.signup-link {
-  margin-top: 15px;
-  color: #ccc;
+/* LOGIN BTN */
+.login-btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(90deg,#3b82f6,#2563eb);
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
 }
 
-.signup-link a {
-  color: #00fff0;
-  text-decoration: none;
+.login-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 20px rgba(37,99,235,0.4);
+}
+
+.login-btn:active{
+  transform:scale(0.97);
+}
+
+/* DIVIDER */
+.divider{
+  display:flex;
+  align-items:center;
+  margin:20px 0;
+  color:#9ca3af;
+  font-size:13px;
+}
+
+.divider::before,
+.divider::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background:#374151;
+  margin:0 10px;
+}
+
+/* SOCIAL BUTTON */
+.social-btn{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid #374151;
+  background:#1f2937;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:10px;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  transition:all 0.3s ease;
+}
+
+/* HOVER EFFECT */
+.social-btn:hover{
+  background:#374151;
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.4);
+}
+
+/* CLICK EFFECT */
+.social-btn:active{
+  transform:scale(0.96);
+}
+
+/* ICON ANIMATION */
+.social-btn img{
+  width:20px;
+  transition:transform 0.3s ease;
+}
+
+.social-btn:hover img{
+  transform:scale(1.2) rotate(5deg);
+}
+
+/* GLOW ANIMATION */
+.social-btn::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-100%;
+  width:100%;
+  height:100%;
+  background:linear-gradient(120deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition:0.5s;
+}
+
+.social-btn:hover::before{
+  left:100%;
+}
+
+/* APPLE WHITE FIX */
+.social-btn img.apple{
+  filter: invert(1);
+}
+
+/* SIGNUP */
+.signup{
+  text-align:center;
+  margin-top:15px;
+  color:#9ca3af;
+  font-size:14px;
+}
+
+.signup a{
+  color:#3b82f6;
+  text-decoration:none;
+  font-weight:500;
+}
+
+/* ENTRY ANIMATION */
+@keyframes fadeIn{
+  from{
+    opacity:0;
+    transform:translateY(20px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}/* LOGO */
+.logo{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  color:white;
+  font-weight:600;
+  font-size:20px;
+  margin-bottom:20px;
+}
+
+.logo img{
+  width:32px;
+}
+.subtitle{
+  text-align:center;
+  color:#9ca3af;
+  font-size:14px;
+  margin-bottom:20px;
+  line-height:1.4;
 }

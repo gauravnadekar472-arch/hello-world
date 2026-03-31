@@ -2,41 +2,68 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <link rel="shortcut icon" href="eaglelogo.png" type="image/x-icon">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login | Chat-AI</title>
+  <title>Signup/Login | QURON-AI</title>
+<link rel="shortcut icon" href="Quron.png" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="login.css" />
-  <!-- Firebase SDK -->
+
+  <!-- ✅ Firebase SDK (IMPORTANT) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </head>
+
 <body>
 
-  <div class="login-container">
-    <h1 class="app-title">CHAT-AI</h1>
+<div class="container">
 
-
-    <!-- Mobile login -->
-    <form id="loginForm">
-      <input type="tel" id="mobile" placeholder="Mobile Number" required />
-      <button type="submit">Login</button>
-    </form>
-
-    <div class="divider">OR</div>
-
-    <!-- Google login -->
-    <button class="google-btn" id="googleLogin">
-      Login with Google
-    </button>
-
-    <p class="signup-link">
-      New user? <a href="signup.html">Create account</a>
-    </p>
+  <div class="logo">
+    <img src="Quron.png">
+    <span>QURONAI</span>
   </div>
 
-  <!-- reCAPTCHA container for Firebase phone login -->
-  <div id="recaptcha-container"></div>
+  <h1>Sign Up/Login</h1>
 
+  <p class="subtitle">
+  Access your account and continue your AI journey.
+</p>
+
+  <!-- ✅ FORM -->
+  <form id="loginForm">
+    <!-- ✅ ID ADD -->
+    <input type="tel" id="mobile" placeholder="Mobile Number" required />
+
+    <div class="password-box">
+      <input type="password" id="password" placeholder="Password" required>
+    </div>
+
+    <button type="submit" class="login-btn">Login</button>
+  </form>
+
+  <div class="divider">OR</div>
+
+  <!-- GOOGLE -->
+  <button class="social-btn" id="googleLogin">
+    <img src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png">
+    Continue with Google
+  </button>
+
+  <!-- APPLE -->
+  <button class="social-btn">
+    <img class="apple" src="https://cdn-icons-png.flaticon.com/512/731/731985.png">
+    Continue with Apple
+  </button>
+
+  <p class="signup">
+     <a href="Forget.html">Forgot your password?</a>No worries.
+  </p>
+
+</div>
+
+<!-- ✅ REQUIRED FOR PHONE LOGIN -->
+<div id="recaptcha-container"></div>
+
+<!-- ✅ YOUR JS -->
 <script src="login.js"></script>
 
 </body>

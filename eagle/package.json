@@ -1,19 +1,20 @@
 {
+  "name": "gemini-ai-server",
+  "version": "1.0.0",
+  "description": "AI chatbot + image prompt generator using Gemini",
+  "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server2.js"
+    "start": "node server.js",
+    "dev": "node --watch server.js"
   },
-  "name": "only-2hrs",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "keywords": [],
+  "keywords": ["ai", "gemini", "chatbot", "image-generator"],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^5.2.1",
-    "node-fetch": "^3.3.2"
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
   }
 }

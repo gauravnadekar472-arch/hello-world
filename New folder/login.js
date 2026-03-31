@@ -1,12 +1,12 @@
 // ================= FIREBASE CONFIG =================
 const firebaseConfig = {
-  apiKey: "AIzaSyDgm2UamG7ctqNSbisMPvmVcT_CsOBBb8U",
-  authDomain: "signuplogin-7e038.firebaseapp.com",
-  projectId: "signuplogin-7e038",
-  storageBucket: "signuplogin-7e038.firebasestorage.app",
-  messagingSenderId: "104490068108",
-  appId: "1:104490068108:web:4c28419a733177362c33a9",
-  measurementId: "G-D84GRQB0F5"
+  apiKey: "AIzaSyBhKGp6t4c8IDyKMiGZCBQc0n62NofPBDA",
+  authDomain: "quronai-f674f.firebaseapp.com",
+  projectId: "quronai-f674f",
+  storageBucket: "quronai-f674f.firebasestorage.app",
+  messagingSenderId: "659872862710",
+  appId: "1:659872862710:web:ce9991a11ab9a4682cf7d7",
+  measurementId: "G-H8Z1CFRJJT"
 };
 
 // Initialize Firebase

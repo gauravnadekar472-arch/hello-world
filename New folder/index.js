@@ -1,6 +1,6 @@
 // ================= CONFIG =================
-const CHAT_API_URL = "https://new-19-h8j7.onrender.com/api/chat";
-const IMAGE_API_URL = "https://new-19-h8j7.onrender.com/api/image";
+const CHAT_API_URL = "https://hello-world-znia.onrender.com";
+const IMAGE_API_URL = "https://hello-world-znia.onrender.com";
 
 // ================= ELEMENTS =================
 const menuBtn = document.getElementById("menuBtn");
@@ -15,11 +15,13 @@ const profileBtn = document.getElementById("profileBtn");
 const attachBtn = document.getElementById("attachBtn");
 const voiceBtn = document.getElementById("voiceBtn");
 const imageBtn = document.getElementById("imageBtn");
+const emptyState = document.getElementById("emptyState");
 
 // ================= STOP / PAUSE CONTROL =================
 let controller = null;
 let isGenerating = false;
 
+// ================= LOGIN CHECK =================
 // ================= LOGIN CHECK =================
 let userProfile;
 try {
@@ -40,11 +42,30 @@ let chats = JSON.parse(localStorage.getItem(CHAT_STORAGE_KEY)) || [];
 let currentChatId = null;
 
 // ================= DRAWER =================
-menuBtn.onclick = () => drawer.classList.toggle("show");
-document.addEventListener("click", e => {
-  if (!drawer.contains(e.target) && !menuBtn.contains(e.target)) drawer.classList.remove("show");
-});
+menuBtn.onclick = (e) => {
+  e.stopPropagation();
 
+  drawer.classList.toggle("show");
+  menuBtn.classList.toggle("active"); // hamburger → X
+
+  // 🔥 MOVE BUTTON
+  if (drawer.classList.contains("show")) {
+    menuBtn.style.left = "230px"; // drawer ke andar shift
+  } else {
+    menuBtn.style.left = "12px"; // normal position
+  }
+};
+
+// Click outside → close drawer + reset button
+document.addEventListener("click", (e) => {
+  if (!drawer.contains(e.target) && !menuBtn.contains(e.target)) {
+    drawer.classList.remove("show");
+    menuBtn.classList.remove("active");
+
+    // 🔥 RESET POSITION
+    menuBtn.style.left = "12px";
+  }
+});
 // ================= CHAT FUNCTIONS =================
 function createNewChat(title = "GPT-5 Chat") {
   currentChatId = Date.now();
@@ -64,7 +85,8 @@ function renderChatList(filter = "") {
   chatHistory.innerHTML = "";
   const filteredChats = chats.filter(c => {
     if (filter && !c.title.toLowerCase().includes(filter.toLowerCase())) return false;
-    return c.messages.some(m => m.type === "ai" && m.text) || c.messages.some(m => m.type === "user" && m.text);
+    return c.messages.some(m => m.text || m.image || m.file);
+
   });
 
   filteredChats.forEach(chat => {
@@ -84,6 +106,27 @@ function renderChatList(filter = "") {
     chatHistory.appendChild(li);
   });
 
+
+
+
+
+
+
+// ✅ Upgrade Button (ADD THIS ABOVE addProjectBtn)
+if (!document.getElementById("upgradeBtn")) {
+  const upgradeBtn = document.createElement("button");
+  upgradeBtn.id = "upgradeBtn";
+  upgradeBtn.textContent = "✨ Upgrade to Premium";
+
+  upgradeBtn.onclick = () => {
+    window.location.href = "upgrade.html";
+  };
+
+  chatHistory.parentElement.appendChild(upgradeBtn);
+}
+
+
+  
   if (!document.getElementById("addProjectBtn")) {
     const btn = document.createElement("button");
     btn.id = "addProjectBtn";
@@ -105,23 +148,46 @@ function showChatMenu(chat, li) {
   menuDiv.style.top = li.offsetTop + li.offsetHeight + "px";
   menuDiv.style.left = li.offsetLeft + "px";
 
+  const commonBtnStyle = "background:#fff;color:#000;border:none;padding:5px 10px;margin:2px;border-radius:3px;cursor:pointer;";
+
   const delBtn = document.createElement("button");
   delBtn.textContent = "Delete Chat";
-  delBtn.onclick = e => { e.stopPropagation(); chats = chats.filter(c => c.id !== chat.id); saveChats(); renderChatList(); if (currentChatId === chat.id) chatArea.innerHTML = ""; menuDiv.remove(); };
+  delBtn.style.cssText = commonBtnStyle;
+  delBtn.onclick = e => { 
+    e.stopPropagation(); 
+    chats = chats.filter(c => c.id !== chat.id); 
+    saveChats(); 
+    renderChatList(); 
+    if (currentChatId === chat.id) chatArea.innerHTML = ""; 
+    menuDiv.remove(); 
+  };
 
   const pinBtn = document.createElement("button");
   pinBtn.textContent = "Pin Chat";
-  pinBtn.onclick = e => { e.stopPropagation(); alert("Chat pinned!"); menuDiv.remove(); };
+  pinBtn.style.cssText = commonBtnStyle;
+  pinBtn.onclick = e => { 
+    e.stopPropagation(); 
+    alert("Chat pinned!"); 
+    menuDiv.remove(); 
+  };
 
   const saveBtn = document.createElement("button");
   saveBtn.textContent = "Save Chat";
-  saveBtn.onclick = e => { e.stopPropagation(); alert("Chat saved!"); menuDiv.remove(); };
+  saveBtn.style.cssText = commonBtnStyle;
+  saveBtn.onclick = e => { 
+    e.stopPropagation(); 
+    alert("Chat saved!"); 
+    menuDiv.remove(); 
+  };
 
   menuDiv.append(delBtn, pinBtn, saveBtn);
   document.body.appendChild(menuDiv);
 
   document.addEventListener("click", function closeMenu(ev) {
-    if (!menuDiv.contains(ev.target)) { menuDiv.remove(); document.removeEventListener("click", closeMenu); }
+    if (!menuDiv.contains(ev.target)) { 
+      menuDiv.remove(); 
+      document.removeEventListener("click", closeMenu); 
+    }
   });
 }
 
@@ -198,7 +264,7 @@ function addFileMessage(file, sender = "user") {
   link.download = file.name || `file_${Date.now()}`;
   link.innerText = "📥 Download / View";
   link.style.cursor = "pointer";
-  link.style.color = sender === "ai" ? "#0ef8e0ff" : "#000";
+  link.style.color = sender === "ai" ? "rgb(255, 255, 255)" : "#000";
 
   div.append(fileName, link);
   chatArea.appendChild(div);
@@ -327,17 +393,96 @@ async function sendImage(prompt) {
   }
 }
 
-// ================= FILE UPLOAD =================
-attachBtn.onchange = e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  if (!currentChatId) createNewChat();
-  const chat = chats.find(c => c.id === currentChatId);
-  addFileMessage(file, "user");
-  chat.messages.push({ file, type: "user" });
-  saveChats();
-  userInput.focus();
-  e.target.value = "";
+// ================= FILE UPLOAD (REAL ICON UI) =================
+const fileInput = document.getElementById("fileInput");
+const cameraInput = document.getElementById("cameraInput");
+
+attachBtn.onclick = (e) => {
+  e.stopPropagation();
+
+  let menu = document.getElementById("attachMenu");
+  if (menu) {
+    menu.remove();
+    return;
+  }
+
+  menu = document.createElement("div");
+  menu.id = "attachMenu";
+  menu.style.cssText = `
+    position: fixed;
+    bottom: 70px;
+    left: 10px;
+    background: #2b2b2b;
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+  `;
+
+menu.innerHTML = `
+  <div class="attach-option" id="openCamera">
+    <!-- CAMERA ICON -->
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2">
+      <path d="M23 19V7a2 2 0 0 0-2-2h-3l-2-2H8L6 5H3a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2z"/>
+      <circle cx="12" cy="13" r="4"/>
+    </svg>
+    Camera
+  </div>
+
+  <div class="attach-option" id="openGallery">
+    <!-- GALLERY / IMAGE ICON -->
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2">
+      <rect x="3" y="3" width="18" height="18" rx="2"/>
+      <circle cx="8.5" cy="8.5" r="1.5"/>
+      <path d="M21 15l-5-5L5 21"/>
+    </svg>
+    Photos
+  </div>
+
+  <div class="attach-option" id="openFiles">
+    <!-- UPLOAD FILE ICON -->
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="white" stroke-width="2">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 5 17 10"/>
+      <line x1="12" y1="5" x2="12" y2="15"/>
+    </svg>
+    Upload files
+  </div>
+`;
+
+  document.body.appendChild(menu);
+
+  // actions
+  document.getElementById("openCamera").onclick = () => {
+    cameraInput.click();
+    menu.remove();
+  };
+
+  document.getElementById("openGallery").onclick = () => {
+    fileInput.accept = "image/*";
+    fileInput.click();
+    menu.remove();
+  };
+
+  document.getElementById("openFiles").onclick = () => {
+    fileInput.accept = "*/*";
+    fileInput.click();
+    menu.remove();
+  };
+
+  // close outside
+  setTimeout(() => {
+    const closeMenu = (ev) => {
+      if (!menu.contains(ev.target) && ev.target !== attachBtn) {
+        menu.remove();
+        document.removeEventListener("click", closeMenu);
+      }
+    };
+    document.addEventListener("click", closeMenu);
+  }, 0);
 };
 
 // ================= VOICE RECORDING =================
@@ -412,30 +557,112 @@ voiceBtn.onclick = async () => {
 // ================= PROFILE =================
 profileBtn.onclick = e => {
   e.stopPropagation();
+
   const profile = JSON.parse(localStorage.getItem("chatAIUser"));
-  if (!profile) { alert("User not logged in"); window.location.href = "login.html"; return; }
+  if (!profile) {
+    alert("User not logged in");
+    window.location.href = "login.html";
+    return;
+  }
 
   let popup = document.getElementById("profilePopup");
-  if (popup) { popup.remove(); return; }
 
+  // Toggle popup
+  if (popup) {
+    popup.remove();
+    return;
+  }
+
+  // Create popup
   popup = document.createElement("div");
   popup.id = "profilePopup";
-  popup.style.cssText = "position:fixed;top:60px;right:15px;background:#111;color:#0ef8e0ff;padding:15px;border-radius:8px;z-index:100;min-width:200px;box-shadow:0 0 10px #0ef8e0ff";
+  popup.style.cssText = `
+    position: fixed;
+    top: 60px;
+    right: 15px;
+    background: #000; /* black box */
+    color: #fff; /* white text */
+    padding: 15px;
+    border-radius: 8px;
+    z-index: 100;
+    min-width: 220px;
+    box-shadow: 0 0 10px rgba(255,255,255,0.2);
+    font-family: Arial, sans-serif;
+  `;
+
   popup.innerHTML = `
     <p><strong>Name:</strong> ${profile.name || "User"}</p>
     <p><strong>Email:</strong> ${profile.email || "Not provided"}</p>
     <p><strong>Phone:</strong> ${profile.phone || profile.mobile || "Not provided"}</p>
-    <button id="logoutBtn" style="margin-top:10px;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;background:#0ef8e0ff;color:#111;">Logout</button>
+    <button id="logoutBtn" style="
+      margin-top:10px;
+      padding:6px 12px;
+      border:none;
+      border-radius:5px;
+      cursor:pointer;
+      background:#fff; /* white button */
+      color:#000; /* black text */
+      font-weight:bold;
+    ">Logout</button>
   `;
+
   document.body.appendChild(popup);
 
-  document.getElementById("logoutBtn").onclick = () => { localStorage.removeItem("chatAIUser"); window.location.href = "login.html"; };
+  // Logout
+  document.getElementById("logoutBtn").onclick = () => {
+    localStorage.removeItem("chatAIUser");
+    window.location.href = "login.html";
+  };
 
+  // Close when clicking outside
   setTimeout(() => {
-    const closeProfile = e => { if (!popup.contains(e.target) && e.target !== profileBtn) { popup.remove(); document.removeEventListener("click", closeProfile); } };
+    const closeProfile = e => {
+      if (!popup.contains(e.target) && e.target !== profileBtn) {
+        popup.remove();
+        document.removeEventListener("click", closeProfile);
+      }
+    };
     document.addEventListener("click", closeProfile);
   }, 0);
 };
+// ===== PROMPTS =====
+const prompts = [
+  "Where should we begin?",
+  "What’s on your mind today?",
+  "What’s on the agenda today?",
+  "How can I help you today?",
+  "Ask me anything...",
+  "Let’s build something amazing.",
+  "Need help with code or ideas?",
+  "Start a conversation...",
+  "What are you working on?",
+  "Tell me your idea..."
+];
+
+// ===== RANDOM SINGLE PROMPT =====
+function getRandomPrompt() {
+  return prompts[Math.floor(Math.random() * prompts.length)];
+}
+
+// ===== RENDER EMPTY STATE (ONLY ONE) =====
+function renderEmptyState() {
+  emptyState.innerHTML = "";
+
+  const text = getRandomPrompt();
+
+  const p = document.createElement("p");
+  p.innerText = text;
+
+  // click = auto send
+  p.style.cursor = "pointer";
+  p.onclick = () => {
+    input.value = text;
+    sendMessage();
+  };
+
+  emptyState.appendChild(p);
+}
+
 
 // ================= EVENTS =================
 sendBtn.addEventListener("click", () => { if (isGenerating) stopGeneration(); else sendMessage(); });
@@ -444,3 +671,7 @@ searchChats.addEventListener("input", e => renderChatList(e.target.value.trim())
 
 // ================= INIT =================
 renderChatList();
+// ===== INIT =====
+window.addEventListener("load", () => {
+  renderEmptyState();
+});
