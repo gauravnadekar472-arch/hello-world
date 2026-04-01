@@ -1,6 +1,6 @@
 // ================= CONFIG =================
-const CHAT_API_URL = "https://hello-world-znia.onrender.com";
-const IMAGE_API_URL = "https://hello-world-znia.onrender.com";
+const CHAT_API_URL = "https://abcc-p4lf.onrender.com";
+const IMAGE_API_URL = "https://abcc-p4lf.onrender.com";
 
 // ================= ELEMENTS =================
 const menuBtn = document.getElementById("menuBtn");

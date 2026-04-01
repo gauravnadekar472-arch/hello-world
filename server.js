@@ -18,10 +18,22 @@ app.use(rateLimit({
   max: 10
 }));
 
-/* ===== CORS ===== */
+/* ===== CORS FIX (IMPORTANT 🔥) */
+const allowedOrigins = [
+  "https://ts-eagleai.netlify.app",
+  "https://quronai.netlify.app"
+];
+
 app.use(cors({
-  origin: "https://ts-eagleai.netlify.app",
-  methods: ["GET", "POST"]
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS blocked"));
+    }
+  },
+  methods: ["GET", "POST"],
+  credentials: true
 }));
 
 app.use(express.json());
@@ -33,12 +45,12 @@ const chats = {};
 app.post("/api/chat", async (req, res) => {
   try {
     const { message, userId = "guest" } = req.body;
+
     if (!message) {
       return res.status(400).json({ error: "Message missing" });
     }
 
     if (!chats[userId]) chats[userId] = [];
-
     const history = chats[userId];
 
     const messages = [
@@ -55,24 +67,24 @@ app.post("/api/chat", async (req, res) => {
 
     const reply = response.choices[0].message.content;
 
-    // save memory
+    // Save memory
     history.push({ role: "user", content: message });
     history.push({ role: "assistant", content: reply });
 
     res.json({ reply });
 
   } catch (err) {
-    console.error(err);
+    console.error("Chat Error:", err);
     res.status(500).json({ reply: "⚠️ Server busy, try again 😅" });
   }
 });
 
-/* ===== HOME ===== */
+/* ===== HEALTH CHECK ===== */
 app.get("/", (req, res) => {
   res.send("🦅 Eagle AI Chat Server Running");
 });
 
-/* ===== START ===== */
+/* ===== START SERVER ===== */
 app.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
